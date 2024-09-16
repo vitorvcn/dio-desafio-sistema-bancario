@@ -9,10 +9,9 @@ menu = """
 
 saldo = 0
 limite = 500
-extrato = ""
+extrato = []
 numero_saques = 0
 LIMITE_SAQUES = 3
-movimentacoes = []
 numero_movimentacoes = 0
 
 while True:
@@ -25,7 +24,7 @@ while True:
         if deposito > 0:
             numero_movimentacoes+=1
             saldo += deposito
-            movimentacoes.append(["Depósito", numero_movimentacoes, deposito, saldo])
+            extrato.append(["Depósito", numero_movimentacoes, deposito, saldo])
             print(f"Deposito realizado com sucesso, seu novo saldo é: R$ {saldo:.2f}")
         else:
             print("Informe um valor positivo maior que zero para deposito!")
@@ -41,7 +40,7 @@ while True:
                         saldo -= saque
                         numero_saques+=1
                         numero_movimentacoes+=1
-                        movimentacoes.append(["Saque",numero_movimentacoes, saque, saldo])
+                        extrato.append(["Saque",numero_movimentacoes, saque, saldo])
                         print(f"Valor do saque: R$ {saque:.2f}\n")
                         print(f"Seu novo saldo é: {saldo:.2f}")
                         print(f"Quantidade de saques efetuados: {numero_saques} de {LIMITE_SAQUES}")
@@ -56,12 +55,17 @@ while True:
     
     
     if opcao == "e":
-        print("Extrato")
-        for movimentacao in movimentacoes:
-            print(f"Número: {movimentacao[1]}")
-            print(f"Tipo: {movimentacao[0]}")
-            print(f"Valor: R${movimentacao[2]:.2f}")
-            print(f"Saldo final: R${movimentacao[3]:.2f}\n")
+        print("Extrato".center(40, "#")+"\n")
+        if extrato:
+            for movimentacao in extrato:
+                print(f"Número: {movimentacao[1]}".center(40))
+                print(f"Tipo: {movimentacao[0]}".center(40))
+                print(f"Valor: R${movimentacao[2]:.2f}".center(40))
+                print(f"Saldo final: R${movimentacao[3]:.2f}\n".center(40))
+        else:
+            print("Não foram realizadas movimentações.".center(40))
+            
+        print("#"*40)
         continue
         
         
