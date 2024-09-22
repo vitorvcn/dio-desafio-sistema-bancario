@@ -72,8 +72,8 @@ def gerar_extrato(saldo, /, *, extrato):
 
 def criar_usuario(usuarios):
     usuario_cpf = input("Informe o CPF do usuário (apenas os números): ")
-    cpf_valido = filtrar_usuario(usuarios, usuario_cpf)
-    if usuario_cpf == -1:
+    cpf_valido = validar_cpf(usuarios, usuario_cpf)
+    if cpf_valido == -1:
         return
     usuario_nome = input("Informe o nome do usuário: ")
     usuario_data_nascimento = input("Informe a data de nascimento do usuário: ")
@@ -85,10 +85,21 @@ def criar_usuario(usuarios):
     
     usuario_endereço = f"{usuario_logradouro}, {usuario_numero} - {usuario_bairro} - {usuario_cidade}/{usuario_sigla_estado}"  
     
-    return {"nome": usuario_nome, "cpf": usuario_cpf, "data_nascimento": usuario_data_nascimento, "endereço": usuario_endereço}
-    
-    
+    return {"nome": usuario_nome, "cpf": usuario_cpf, "data_nascimento": usuario_data_nascimento, "endereco": usuario_endereço}
+   
+   
 def filtrar_usuario(usuarios, cpf):
+    if usuarios:
+        for numero_usuario, usuario in enumerate(usuarios):
+            if cpf in usuario.values():
+                cpf_cadastrado = True
+                return cpf_cadastrado, numero_usuario             
+    else:
+        print("Nenhum usuário cadastrado!")
+        return not usuarios, -1
+
+    
+def validar_cpf(usuarios, cpf):
     print("Validando CPF\n")
     while True:
         if usuarios:
@@ -118,10 +129,16 @@ def filtrar_usuario(usuarios, cpf):
     
 def criar_conta(agencia, numero_conta, usuarios):
     usuario_cpf = input("Informe o CPF do usuáiro: ")
-    
-    
+    cpf_cadastrado, numero_usuario = filtrar_usuario(usuarios, usuario_cpf)
+    if cpf_cadastrado:
+        numero_conta+=1
+        nova_conta = {"agencia": agencia, "numero_conta": numero_conta, "numero_usuario": numero_usuario}
+        return nova_conta, numero_conta
+        
+    else:
+        print("Usuário não encontrado!")
+        return
 
-    return
     
     
 def main():
@@ -134,7 +151,8 @@ def main():
     LIMITE_SAQUES = 3
     numero_movimentacoes = 0
     agencia = "0001"
-    numero_conta = []
+    numero_conta = 0
+    contas = []
     while True:
     
         opcao = menu()
@@ -161,17 +179,31 @@ def main():
         
         if opcao == "u":
             print("Cadastrar novo usuário")
-            usuarios.append((criar_usuario(usuarios)))
-            print(usuarios)
+            novo_usuario = criar_usuario(usuarios)
+            if novo_usuario:
+                usuarios.append(novo_usuario)
+                print(usuarios)
             continue
         
         if opcao == "c":
             print("Criar nova conta")
-            
+            nova_conta, numero_conta = criar_conta(agencia, numero_conta, usuarios)
+            if nova_conta:
+                contas.append(nova_conta)
+                print(contas)
             continue
-            
+
         if opcao == "f":
             print("Filtrar usuário")
+            cpf = input("Informe o CPF do usuário que deseja buscar: ")
+            cpf_cadastrado, numero_usuario = filtrar_usuario(usuarios, cpf)
+            if cpf_cadastrado:
+                print(f"Usuário cadastrado:")
+                print(f"Número do usuário: {numero_usuario+1}")
+                print(f"CPF:{usuarios[numero_usuario]['cpf']}")
+                print(f"Nome:{usuarios[numero_usuario]['nome']}")
+                print(f"Data de Nascimento:{usuarios[numero_usuario]['data_nascimento']}")
+                print(f"Endereço:{usuarios[numero_usuario]['endereco']}")
             continue
             
         if opcao == "q":
