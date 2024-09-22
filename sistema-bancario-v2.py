@@ -93,7 +93,10 @@ def filtrar_usuario(usuarios, cpf):
         for numero_usuario, usuario in enumerate(usuarios):
             if cpf in usuario.values():
                 cpf_cadastrado = True
-                return cpf_cadastrado, numero_usuario             
+                return cpf_cadastrado, numero_usuario
+        else:
+            print("Usuário não cadastrado!u")
+            return not usuarios, -1
     else:
         print("Nenhum usuário cadastrado!")
         return not usuarios, -1
